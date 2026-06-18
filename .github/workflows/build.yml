@@ -1,10 +1,5 @@
 name: build-images
 
-# Squelette à compléter — étape 3 (build) et défi de l'étape 3 (signature cosign).
-#
-# Principe GitOps : la CI BUILD et PUSH une image. C'est tout.
-# Elle ne touche PAS au cluster. C'est ArgoCD qui réagira au nouveau tag.
-
 on:
   push:
     branches: ["main", "feature/**"]
@@ -15,8 +10,8 @@ on:
 
 permissions:
   contents: read
-  packages: write          # nécessaire pour pousser sur ghcr.io
-  id-token: write          # nécessaire pour la signature cosign (OIDC keyless)
+  packages: write
+  id-token: write
 
 jobs:
   build:
@@ -38,16 +33,14 @@ jobs:
       - name: Set lowercase owner
         run: echo "OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
+      - name: Sanitize branch name
+        run: echo "BRANCH_SLUG=$(echo '${{ github.ref_name }}' | sed 's/\//-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: services/${{ matrix.service }}
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER}}/${{ matrix.service }}:${{ github.sha }}
-            ghcr.io/${{ env.OWNER}}/${{ matrix.service }}:${{ github.ref_name }}
-
-      # TODO étape 3 (défi) : ajoutez la signature cosign keyless (OIDC).
-      # Indice : utilisez l'action sigstore/cosign-installer puis `cosign sign --yes`.
-      #
-      # TODO étape 3 (défi) : ajoutez un scan trivy en mode --exit-code=1 sur CRITICAL.
+            ghcr.io/${{ env.OWNER }}/${{ matrix.service }}:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/${{ matrix.service }}:${{ env.BRANCH_SLUG }}

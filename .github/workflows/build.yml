@@ -35,14 +35,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase owner
+        run: echo "OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: services/${{ matrix.service }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner | lower }}/${{ matrix.service }}:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner | lower }}/${{ matrix.service }}:${{ github.ref_name }}
+            ghcr.io/${{ env.OWNER}}/${{ matrix.service }}:${{ github.sha }}
+            ghcr.io/${{ env.OWNER}}/${{ matrix.service }}:${{ github.ref_name }}
 
       # TODO étape 3 (défi) : ajoutez la signature cosign keyless (OIDC).
       # Indice : utilisez l'action sigstore/cosign-installer puis `cosign sign --yes`.

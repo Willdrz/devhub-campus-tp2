@@ -28,7 +28,7 @@ FROM gcr.io/distroless/static:nonroot AS runtime
 
 # TODO : LABEL org.opencontainers.image.source.
 
-LABEL org.opencontainers.image.source="https://github.com/willdrz/devhub-campus"
+LABEL org.opencontainers.image.source="https://github.com/willdrz/devhub-campus-tp2"
 
 # TODO : copiez le binaire depuis le stage `build`.
 

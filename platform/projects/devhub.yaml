@@ -19,7 +19,7 @@ spec:
   # TODO : listez ici les dépôts Git autorisés pour ce projet.
   # Refusez tout dépôt qui n'est pas listé.
   sourceRepos:
-    - https://github.com/willdrz/devhub-campus.git
+    - https://github.com/willdrz/devhub-campus-tp2.git
 
   # TODO : listez ici les destinations autorisées (clusters + namespaces).
   # Pour le TP, vous voulez :
